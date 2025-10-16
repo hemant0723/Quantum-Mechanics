@@ -196,6 +196,7 @@ window.DATA = {
   // Homework announcements
   homework: [
     { id:"H1", title:"Homework 1", subject:"Quantum Mechanics", due:"2025-09-18", points: 0, link:"assets/homework/hw1.html", description: "All students submitted on time. Grades: To be announced." },
+    { id:"S1", title:"Solution 1", link:"assets/homework/Homework-1_Question_2 Solution.pdf" },
     { id:"H2", title:"Homework 2", subject:"Quantum Mechanics", due:"2025-09-25", points: 0, link:"assets/homework/hw2.html" },
     { id:"H3", title:"Homework 3", subject:"Quantum Mechanics", due:"2025-10-09", points: 0, link:"assets/homework/hw3.html", description: "Quantum Operators." },
     { id:"H4", title:"Homework 4", subject:"Quantum Mechanics", due:"2025-10-16", points: 0, description: "To be announced." }
