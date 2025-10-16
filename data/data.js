@@ -190,6 +190,19 @@ window.DATA = {
     { assignmentId:"H3", student:"D13222019", marks:5, max:5 },
     { assignmentId:"H3", student:"D13222022", marks:5, max:5 },
     { assignmentId:"H3", student:"114011862", marks:5, max:5 }
+
+    // HW-4 (max 5)
+    { assignmentId:"H3", student:"D14222013", marks:5, max:5 },
+    { assignmentId:"H3", student:"D14222014", marks:5, max:5 },
+    { assignmentId:"H3", student:"D14222016", marks:5, max:5 },
+    { assignmentId:"H3", student:"D14222017", marks:5, max:5 },
+    { assignmentId:"H3", student:"D14222018", marks:5, max:5 },
+    { assignmentId:"H3", student:"D14222020", marks:5, max:5 },
+    { assignmentId:"H3", student:"D14222022", marks:5, max:5 },
+    { assignmentId:"H3", student:"D13222018", marks:5, max:5 },
+    { assignmentId:"H3", student:"D13222019", marks:5, max:5 },
+    { assignmentId:"H3", student:"D13222022", marks:5, max:5 },
+    { assignmentId:"H3", student:"114011862", marks:5, max:5 }
     // { assignmentId:"A1", student:"Wazid Ahmed", marks:18, max:20 }
   ],
 
