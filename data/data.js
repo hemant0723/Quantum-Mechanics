@@ -199,7 +199,7 @@ window.DATA = {
     { id:"S1", title:"Solution 1", link:"assets/homework/Homework-1_Question_2 Solution.pdf" },
     { id:"H2", title:"Homework 2", subject:"Quantum Mechanics", due:"2025-09-25", points: 0, link:"assets/homework/hw2.html" },
     { id:"H3", title:"Homework 3", subject:"Quantum Mechanics", due:"2025-10-09", points: 0, link:"assets/homework/hw3.html", description: "Quantum Operators." },
-    { id:"H4", title:"Homework 4", subject:"Quantum Mechanics", due:"2025-10-16", points: 0, description: "To be announced." }
+    { id:"H4", title:"Homework 4", subject:"Quantum Mechanics", due:"2025-10-16", points: 0, link:"assets/homework/hw4.html" }
   ],
 
   // Books and references table (merged for student view)
