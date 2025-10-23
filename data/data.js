@@ -173,7 +173,7 @@ window.DATA = {
     { date: "2025-10-23", student: "D14222017", status: "Present" }, // Tanzeela Asghar
     { date: "2025-10-23", student: "D14222018", status: "Present" }, // Rehan Abid
     { date: "2025-10-23", student: "D14222020", status: "Present" }, // Tsegaye Menberu Genzebu
-    { date: "2025-10-23", student: "D14222022", status: "Present" }, // Ujjal Bikash Parashar
+    { date: "2025-10-23", student: "D14222022", status: "Absent" }, // Ujjal Bikash Parashar
     { date: "2025-10-23", student: "D13222018", status: "Present" }, // YOU-CHEN LIN
     { date: "2025-10-23", student: "D13222019", status: "Present" }, // Yu-Tse Tsai
     { date: "2025-10-23", student: "D13222022", status: "Present" }, // Muhammad Roman
