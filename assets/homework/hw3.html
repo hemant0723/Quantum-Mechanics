@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Homework – Quantum Operators (2025/09/25)</title>
+
+  <style>
+    :root { --ink:#0f172a; --muted:#475569; --accent:#0ea5e9; --bg:#ffffff; --card:#f8fafc; }
+    html, body { margin:0; padding:0; background:var(--bg); color:var(--ink); }
+    body { font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+    .wrap { max-width: 860px; margin: 48px auto; padding: 0 20px; }
+    header { margin-bottom: 24px; }
+    h1 { font-size: 1.9rem; margin: 0 0 8px; }
+    .meta { color: var(--muted); }
+    h2 { margin: 28px 0 12px; font-size: 1.35rem; }
+    h3 { margin: 20px 0 10px; font-size: 1.05rem; color: var(--muted); }
+    ol, ul { padding-left: 1.25rem; }
+    .card { background: var(--card); border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 18px 6px; margin: 14px 0 22px; }
+    .note { border-left:4px solid var(--accent); padding:12px 14px; background:#f0f9ff; color:#0b3b4f; border-radius:8px; margin-top:12px; }
+    footer { margin: 40px 0 20px; color: var(--muted); font-size: .95rem; }
+    a { color:#0369a1; }
+  </style>
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } };
+  </script>
+  <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>H.W. — Quantum Operators</h1>
+      <div class="meta">Date: <strong>2025/09/25</strong></div>
+    </header>
+
+    <section class="card">
+      <h2>(1) Properties of Hermitian Operators</h2>
+
+      <h3>(a) Orthogonality for distinct eigenvalues</h3>
+      <p>
+        Let \(A=A^\dagger\) (component form \(A^\dagger_{ij}=A^{*}_{ji}\)). Suppose
+        \[
+          A\,\psi_1(x)=a_1\,\psi_1(x), \qquad \big[A\,\psi_2(x)\big]^*=a_2\,\psi_2^*(x).
+        \]
+        Prove that
+        \[
+          \int \psi_2^*(x)\,\psi_1(x)\,dx = 0 \quad \text{if } a_1\neq a_2 .
+        \]
+      </p>
+
+      <h3>(b) Hermitian conjugate and product rule</h3>
+      <p>
+        Define \(A^\dagger\) by
+        \[
+          \int dx\,\big(A\psi(x)\big)^*\,\phi(x)=\int dx\,\psi^*(x)\,\big(A^\dagger\phi(x)\big).
+        \]
+        For \(A=A^\dagger\) show \((AB)^\dagger=B^\dagger A^\dagger\). In general,
+        \((AB\cdots Z)^\dagger = Z^\dagger\cdots B^\dagger A^\dagger\).
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>(2) Algebra with \([A,A^\dagger]=\hbar\)</h2>
+      <p>
+        Let \(f(A^\dagger)\) be any polynomial (or power series) in \(A^\dagger\) and assume
+        \([A,A^\dagger]=\hbar\) (a c-number). Define
+        \[
+          U_n=\frac{1}{\sqrt{n!}}
+          \left(\frac{A^\dagger}{\sqrt{\hbar}}\right)^{\!n} U_0,
+          \qquad A\,U_0=0 .
+        \]
+        Prove:
+      </p>
+
+      <ol>
+        <li>
+          <p>
+            <strong>Derivative form:</strong>
+            \[
+              A\,f(A^\dagger)\,U_0
+              = \hbar\,\frac{d f(A^\dagger)}{dA^\dagger}\,U_0,
+            \]
+            i.e. \(A\equiv \hbar\,\dfrac{d}{dA^\dagger}\) when acting on \(f(A^\dagger)U_0\).
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Similarity transform:</strong>
+            \[
+              e^{\lambda A}\,f(A^\dagger)\,e^{-\lambda A}
+              = f\!\big(A^\dagger+\lambda\hbar\big).
+            \]
+            <em>Hint:</em>
+            \[
+              e^{\lambda A} A^\dagger e^{-\lambda A}
+              = A^\dagger + \lambda[A,A^\dagger]
+              + \frac{\lambda^2}{2!}[A,[A,A^\dagger]]+\cdots
+              = A^\dagger+\lambda\hbar .
+            \]
+          </p>
+        </li>
+      </ol>
+
+      <div class="note">
+        <strong>Corollary (BCH for this algebra):</strong>
+        If \([A,B]\) is a c-number commuting with \(A,B\),
+        \[
+          e^{A+B}=e^{A}\,e^{B}\,e^{-\tfrac{1}{2}[A,B]}.
+        \]
+        In particular, with \(B=\beta A^\dagger\) and \([A,A^\dagger]=\hbar\),
+        \[
+          e^{\alpha A+\beta A^\dagger}
+          = e^{\alpha A}\,e^{\beta A^\dagger}\,e^{-\tfrac{1}{2}\alpha\beta\,\hbar}.
+        \]
+      </div>
+    </section>
+
+    <footer>
+      © 2025 · Prepared for course use. Typeset with MathJax.
+    </footer>
+  </main>
+</body>
+</html>

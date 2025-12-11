@@ -1,0 +1,569 @@
+        this.renderAttendance();
+        this.renderNotes();
+        this.renderResults();
+      });
+    }
+    
+    // Attendance filters
+    document.getElementById('att-month')?.addEventListener('input', () => this.renderAttendance());
+    document.getElementById('att-clear-filter')?.addEventListener('click', () => {
+      const monthInput = document.getElementById('att-month');
+      if (monthInput) {
+        monthInput.value = '';
+        this.renderAttendance();
+      }
+    });
+    
+    // Book search (debounced)
+    const bookSearch = document.getElementById('book-search');
+    if (bookSearch) bookSearch.addEventListener('input', debounce(() => this.renderBooks(), 200));
+
+    // Roster search (debounced) and filter
+    const rosterSearch = document.getElementById('roster-search');
+    if (rosterSearch) rosterSearch.addEventListener('input', debounce(() => this.renderRosterTable(), 200));
+    document.getElementById('roster-program')?.addEventListener('change', () => this.renderRosterTable());
+
+    // In-page navigation: switch tabs when clicking footer/header links
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute('href').replace(/^#/, '');
+      if (!id) return;
+      if (this.panelIndexById && this.panelIndexById[id] !== undefined) {
+        e.preventDefault();
+        this.switchTab(this.panelIndexById[id]);
+      }
+    });
+  }
+
+  // ----- Admin UI -----
+  setupAdmin() {
+    const saveAttBtn = document.getElementById('adm-att-save');
+    const markAllBtn = document.getElementById('adm-att-all');
+    const dateInput = document.getElementById('adm-att-date');
+    const listBox = document.getElementById('adm-att-list');
+    const logoutBtn = document.getElementById('adm-logout');
+    const exportBtn = document.getElementById('adm-export');
+    const exportXlsxBtn = document.getElementById('adm-export-xlsx');
+    const importBtn = document.getElementById('adm-import');
+    const importText = document.getElementById('adm-import-text');
+    const clearBtn = document.getElementById('adm-clear');
+    if (!listBox) return; // admin panel absent
+
+    // Render list of students with checkboxes
+    const renderList = () => {
+      listBox.innerHTML = this.DATA.students
+        .slice()
+        .sort((a,b)=> (a.name||'').localeCompare(b.name||'', undefined, {sensitivity:'base'}))
+        .map(s => `
+          <label style="display:flex;align-items:center;gap:.5rem">
+            <input type="checkbox" class="adm-att-chk" value="${s.id}"/>
+            <span>${s.name}${s.nameZh ? ` <span class=\"muted\">(${s.nameZh})</span>` : ''}</span>
+          </label>
+        `).join('');
+    };
+    renderList();
+
+    markAllBtn?.addEventListener('click', () => {
+      listBox.querySelectorAll('.adm-att-chk').forEach(cb => cb.checked = true);
+    });
+
+    saveAttBtn?.addEventListener('click', () => {
+      const date = dateInput?.value;
+      if (!date) { alert('Please choose a date'); return; }
+      const ids = [...listBox.querySelectorAll('.adm-att-chk:checked')].map(cb => cb.value);
+      if (!ids.length) { alert('Select at least one student'); return; }
+      this.overrides = this.overrides || {};
+      this.overrides.attendance = this.overrides.attendance || [];
+      ids.forEach(id => this.overrides.attendance.push({ date, student: id, status: 'Present' }));
+      this.saveOverrides();
+      this.DATA = this.buildData();
+      this.renderAttendance();
+      alert('Attendance saved');
+    });
+
+    exportBtn?.addEventListener('click', async () => {
+      const txt = JSON.stringify(this.overrides || {}, null, 2);
+      try { await navigator.clipboard.writeText(txt); alert('Overrides copied to clipboard'); }
+      catch { (importText || {}).value = txt; alert('Copied to the text area below.'); }
+    });
+
+    exportXlsxBtn?.addEventListener('click', () => {
+      if (typeof this.exportHomeworkExcel6 === 'function') this.exportHomeworkExcel6();
+    });
+
+    importBtn?.addEventListener('click', () => {
+      const txt = importText?.value?.trim();
+      if (!txt) { alert('Paste JSON into the box first'); return; }
+      try {
+        this.overrides = JSON.parse(txt);
+        this.saveOverrides();
+        this.DATA = this.buildData();
+        this.renderRosterTable();
+        this.renderAttendance();
+        this.renderAssignments();
+        this.renderHomework();
+        alert('Overrides imported');
+      } catch (e) {
+        alert('Invalid JSON');
+      }
+    });
+
+    clearBtn?.addEventListener('click', () => {
+      if (!confirm('Clear all admin overrides?')) return;
+      this.overrides = {};
+      this.saveOverrides();
+      this.DATA = this.buildData();
+      this.renderRosterTable();
+      this.renderAttendance();
+      this.renderAssignments();
+      this.renderHomework();
+      alert('Overrides cleared');
+    });
+
+    logoutBtn?.addEventListener('click', () => {
+      this.logoutAdmin();
+      // Switch away from admin panel
+      const idxInfo = this.panelIndexById?.info ?? 0;
+      if (typeof idxInfo === 'number') this.switchTab(idxInfo);
+      alert('Logged out of admin');
+    });
+
+    // ---- Homework editor ----
+    const hwTitle = document.getElementById('adm-hw-title');
+    const hwDue = document.getElementById('adm-hw-due');
+    const hwPts = document.getElementById('adm-hw-points');
+    const hwLink = document.getElementById('adm-hw-link');
+    const hwDesc = document.getElementById('adm-hw-desc');
+    const hwAdd = document.getElementById('adm-hw-add');
+    const hwList = document.getElementById('adm-hw-list');
+
+    const renderHwList = () => {
+      if (!hwList) return;
+      const items = this.DATA.homework || [];
+      hwList.innerHTML = items.length ? items.map(h => `
+        <div class="hw-card">
+          <div class="meta"><strong>${h.title}</strong><span>${h.points||0} pts</span></div>
+          <div class="meta"><span>Due: ${h.due||'—'}</span>${h.link ? `<a class=\"link\" target=\"_blank\" href=\"${h.link}\">Open</a>` : ''}</div>
+          <p>${h.description||h.notes||''}</p>
+          <div class="row-wrap">
+            <button data-id="${h.id}" class="adm-hw-del">Delete</button>
+          </div>
+        </div>
+      `).join('') : '<p class="muted">No homework yet.</p>';
+      // wire delete
+      hwList.querySelectorAll('.adm-hw-del').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const current = this.overrides?.homework || this.DATA.homework || [];
+          const next = current.filter(h => h.id !== id);
+          this.overrides = this.overrides || {};
+          this.overrides.homework = next;
+          this.saveOverrides();
+          this.DATA = this.buildData();
+          renderHwList();
+          this.renderHomework();
+        });
+      });
+    };
+    renderHwList();
+
+    hwAdd?.addEventListener('click', () => {
+      const title = hwTitle?.value?.trim();
+      if (!title) { alert('Please enter a title'); return; }
+      const due = hwDue?.value || undefined;
+      const points = parseFloat(hwPts?.value || '0') || 0;
+      const link = hwLink?.value?.trim() || undefined;
+      const description = hwDesc?.value?.trim() || '';
+      const item = { id: `H${Date.now()}`, title, due, points, link, description };
+      this.overrides = this.overrides || {};
+      this.overrides.homework = this.overrides.homework || (this.DATA.homework ? [...this.DATA.homework] : []);
+      this.overrides.homework.push(item);
+      this.saveOverrides();
+      this.DATA = this.buildData();
+      renderHwList();
+      this.renderHomework();
+      hwTitle.value = hwDue.value = hwPts.value = hwLink.value = '';
+      hwDesc.value = '';
+    });
+  }
+
+  // Export homework-only marks to Excel (5-mark scale)
+  exportHomeworkExcel5() {
+    try {
+      if (typeof XLSX === 'undefined') {
+        alert('Excel library not loaded. Check network.');
+        return;
+      }
+      const scale = 5;
+      const students = (this.DATA.students || []).slice();
+      const hwAssn = (this.DATA.assignments || [])
+        .filter(a => /^H\d+$/i.test(a.id || '') && Number(a.max) === scale)
+        .sort((a,b) => this.getAssignmentOrder(a) - this.getAssignmentOrder(b));
+      const assnIds = hwAssn.map(a => String(a.id).toUpperCase());
+
+      const marksBy = new Map();
+      for (const r of (this.DATA.marks || [])) {
+        const id = String(r.assignmentId || '').toUpperCase();
+        if (!/^H\d+$/.test(id)) continue;
+        if (Number(r.max) !== scale) continue;
+        if (!marksBy.has(id)) marksBy.set(id, new Map());
+        marksBy.get(id).set(String(r.student), Number(r.marks));
+      }
+
+      const header = ['Student ID', 'Name', ...assnIds, 'Total'];
+      const rows = [header];
+      for (const s of students) {
+        const row = [s.id, s.name];
+        let total = 0;
+        for (const id of assnIds) {
+          const v = marksBy.get(id)?.get(s.id);
+          const num = (typeof v === 'number') ? v : '';
+          if (typeof v === 'number') total += v;
+          row.push(num);
+        }
+        row.push(total);
+        rows.push(row);
+      }
+
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Homework (5)');
+      XLSX.writeFile(wb, 'homework-5-mark-scale.xlsx');
+    } catch (e) {
+      console.error(e);
+      alert('Failed to export Excel. See console for details.');
+    }
+  }
+
+  // Export 6-mark scale homework with Best 10 of 11 total
+  exportHomeworkExcel6() {
+    try {
+      if (typeof XLSX === 'undefined') {
+        alert('Excel library not loaded. Check network.');
+        return;
+      }
+      const scale = 6;
+      const students = (this.DATA.students || []).slice();
+      const hwAssn = (this.DATA.assignments || [])
+        .filter(a => /^H\d+$/i.test(a.id || '') && Number(a.max || a.maxMarks) === scale)
+        .sort((a,b) => this.getAssignmentOrder(a) - this.getAssignmentOrder(b));
+      const assnIds = hwAssn.map(a => String(a.id).toUpperCase());
+
+      // marksBy[assignmentId][studentId] = marks
+      const marksBy = new Map();
+      for (const r of (this.DATA.marks || [])) {
+        const id = String(r.assignmentId || '').toUpperCase();
+        if (!/^H\d+$/.test(id)) continue;
+        if (Number(r.max) !== scale) continue;
+        if (!marksBy.has(id)) marksBy.set(id, new Map());
+        marksBy.get(id).set(String(r.student), Number(r.marks));
+      }
+
+      const header = ['Student ID', 'Name', ...assnIds, 'Best10Total (out of 60)'];
+      const rows = [header];
+      for (const s of students) {
+        const row = [s.id, s.name];
+        const vals = [];
+        for (const id of assnIds) {
+          const v = marksBy.get(id)?.get(s.id);
+          const num = (typeof v === 'number') ? v : '';
+          if (typeof v === 'number') vals.push(v); else vals.push(0);
+          row.push(num);
+        }
+        // Best 10 of 11
+        const best = vals
+          .filter(v => typeof v === 'number')
+          .sort((a,b) => b - a)
+          .slice(0, Math.min(10, vals.length));
+        const bestTotal = best.reduce((n, v) => n + (v || 0), 0);
+        row.push(bestTotal);
+        rows.push(row);
+      }
+
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Homework (6-best10)');
+      XLSX.writeFile(wb, 'homework-6-mark-scale.xlsx');
+    } catch (e) {
+      console.error(e);
+      alert('Failed to export Excel. See console for details.');
+    }
+  }
+
+  initialRenders() {
+    // Critical first paint
+    this.renderRosterTable();
+    this.renderSyllabus();
+    this.renderAttendance();
+    this.renderGradingScale();
+    // Skip marks table in Homework; keep the page clean
+
+    // Non-critical: schedule when idle
+    const idle = (cb) => (window.requestIdleCallback ? requestIdleCallback(cb, { timeout: 500 }) : setTimeout(cb, 0));
+    idle(() => { this.renderHomework(); this.renderNotes(); });
+    idle(() => { this.renderBooks(); this.renderContacts(); });
+    idle(() => { this.renderResults(); });
+    this.setupDiscussion();
+  }
+
+  renderGradingScale() {
+    const tbody = document.querySelector('#grading-table tbody');
+    const note = document.getElementById('grading-note');
+    if (note) note.textContent = this.DATA.course?.gradingNote || '';
+    if (!tbody) return;
+    const scale = Array.isArray(this.DATA.course?.gradingScale) ? this.DATA.course.gradingScale : [];
+    tbody.innerHTML = scale.map(row => {
+      const noteTxt = row.note ? ` <span class=\"muted\">(${this.escapeHtml(String(row.note))})</span>` : '';
+      return `<tr>
+        <td>${this.escapeHtml(String(row.letter || ''))}${noteTxt}</td>
+        <td>${this.escapeHtml(String(row.point ?? ''))}</td>
+        <td>${this.escapeHtml(String(row.range || ''))}</td>
+        <td>${this.escapeHtml(String(row.score ?? ''))}</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="4">Grading scale not available.</td></tr>';
+    this.applyRowAppear(tbody);
+  }
+
+  renderRosterTable() {
+    const tbody = $('#roster-table tbody');
+    if (!tbody) return;
+    const q = ($('#roster-search')?.value || '').toLowerCase();
+    const prog = ($('#roster-program')?.value || '').toLowerCase();
+
+    // Populate program select once with unique values
+    const progSel = document.getElementById('roster-program');
+    if (progSel && !progSel.dataset.populated) {
+      const programs = [...new Set(this.DATA.students
+        .map(s => s.note || s.program)
+        .filter(Boolean))]
+        .sort((a, b) => String(a).localeCompare(String(b), undefined, { sensitivity: 'base' }));
+      programs.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        progSel.appendChild(opt);
+      });
+      progSel.dataset.populated = 'true';
+    }
+
+    const matches = (s) => {
+      const hay = [s.id, s.name, s.nameZh, s.email, s.dept, s.note, s.program]
+        .map(x => String(x || '').toLowerCase());
+      const textOk = !q || hay.some(x => x.includes(q));
+      const progOk = !prog || hay.includes(prog);
+      return textOk && progOk;
+    };
+
+    const unlockedAll = !!(this.unlocked && (this.unlocked.ALL || this.unlocked['*']));
+
+    tbody.innerHTML = this.DATA.students
+      .slice()
+      .filter(matches)
+      .sort((a, b) => (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base' }))
+      .map(s => {
+        const dept = s.dept || '—';
+        const program = s.note || s.program || '—';
+        const unlocked = unlockedAll || !!(this.unlocked && this.unlocked[String(s.id)]);
+        const email = unlocked && s.email
+          ? `<a class=\"link\" href=\"mailto:${s.email}\">${s.email}</a>`
+          : `*** ${(!unlockedAll && s.email) ? `<button class=\"unlock-btn\" data-student=\"${String(s.id)}\">Unlock</button>` : ''}`;
+        const idDisp = unlocked ? (s.id || '—') : (s.id ? '***' : '—');
+        const nameCell = `${s.name || '—'}${s.nameZh ? `<div class=\"muted\">${s.nameZh}</div>` : ''}`;
+        return `<tr>
+          <td data-label=\"ID\">${idDisp}</td>
+          <td data-label=\"Name\">${nameCell}</td>
+          <td data-label=\"Dept\">${dept}</td>
+          <td data-label=\"Program\">${program}</td>
+          <td data-label=\"Email\">${email}</td>
+        </tr>`;
+      })
+      .join('') || '<tr><td colspan="5">No matching students.</td></tr>';
+
+    // Wire up unlock buttons
+    $$('.unlock-btn', tbody).forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const sid = e.currentTarget.getAttribute('data-student');
+        this.unlockStudent(sid);
+      });
+    });
+  }
+
+  renderContacts() {
+    const c = this.DATA.course || {};
+    const box = document.getElementById('contacts-box');
+    if (!box) return;
+    const instructor = c.instructor || {};
+    const tas = Array.isArray(c.tas) ? c.tas : (c.ta ? [c.ta] : []);
+    const insEmail = instructor.email ? `<a class="link" href="mailto:${instructor.email}">${instructor.email}</a>` : '—';
+    const office = c.office || '—';
+    const officeHours = c.officeHours || 'By appointment';
+    const time = c.time || '—';
+    const location = this.englishOnly(c.location) || '—';
+
+    const taList = tas.map(t => {
+      const email = t.email ? `<a class=\"link\" href=\"mailto:${t.email}\">${t.email}</a>` : '—';
+      const phone = t.phone ? `<br>Phone: <a class=\"link\" href=\"tel:${t.phone.replace(/\s+/g,'')}\">${t.phone}</a>` : '';
+      const aff = t.affiliation ? ` (${t.affiliation})` : '';
+      return `<li><strong>${t.name || '—'}</strong>${aff}<br>Email: ${email}${phone}</li>`;
+    }).join('') || '<li>—</li>';
+
+    box.innerHTML = `
+      <div class="card">
+        <h3>Instructor</h3>
+        <p><strong>${instructor.nameEn || instructor.name || '—'}</strong></p>
+        <p>Email: ${insEmail}</p>
+        <p>Office Hours: ${officeHours}</p>
+        <p>Office: ${office}</p>
+        <p>Time: ${time}</p>
+        <p>Location: ${location}</p>
+      </div>
+      <div class="card">
+        <h3>Teaching Assistants</h3>
+        <ul>${taList}</ul>
+      </div>
+    `;
+  }
+
+  setupDiscussion() {
+    const form = document.getElementById('discussion-form');
+    const list = document.getElementById('discussion-list');
+    if (!form || !list) return;
+
+    const API = (window.COMMENTS_API || '/api/comments');
+    const $ = (sel) => document.querySelector(sel);
+
+    const render = async () => {
+      list.innerHTML = '<p class="muted">Loading…</p>';
+      try {
+        const res = await fetch(`${API}?limit=200`, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) throw new Error(`Load failed: ${res.status}`);
+        const items = await res.json();
+        list.innerHTML = Array.isArray(items) && items.length ? items.map(p => `
+          <div class="post">
+            <div class="post-meta"><strong>${this.escapeHtml(p.name || 'Anonymous')}</strong> <span class="muted">• ${new Date(p.createdAt || p.ts || Date.now()).toLocaleString()}</span></div>
+            <div class="post-body">${this.escapeHtml(p.msg || '').replace(/\n/g,'<br>')}</div>
+            ${p.email ? `<div class="post-contact"><a class="link" href="mailto:${this.escapeHtml(p.email)}">${this.escapeHtml(p.email)}</a></div>` : ''}
+          </div>
+        `).join('') : '<p class="muted">No messages yet.</p>';
+      } catch (err) {
+        list.innerHTML = `<p class="muted">Failed to load messages.</p>`;
+        // eslint-disable-next-line no-console
+        console.error(err);
+      }
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = $('#disc-name')?.value?.trim() || '';
+      const email = $('#disc-email')?.value?.trim() || '';
+      const msg = $('#disc-message')?.value?.trim() || '';
+      if (!msg) return;
+      const btn = form.querySelector('button[type="submit"]');
+      btn?.setAttribute('disabled', 'disabled');
+      try {
+        const res = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, msg })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || `Post failed: ${res.status}`);
+        }
+        $('#disc-message').value = '';
+        await render();
+      } catch (err) {
+        alert(err.message || 'Failed to post message');
+      } finally {
+        btn?.removeAttribute('disabled');
+      }
+    });
+
+    render();
+  }
+
+  escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+  }
+
+  renderSyllabus() {
+    const tbody = $('#syllabus-table tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = this.DATA.course.syllabus
+      .map(w => `<tr><td>Week ${w.week}</td><td>${w.date}</td><td>${w.topic}</td></tr>`)
+      .join('');
+  }
+
+  renderAttendance() {
+    const selectedId = this.getSelectedId();
+    if (!selectedId) return;
+    const selected = this.DATA.students.find(s => s.id === selectedId);
+    
+    const month = $('#att-month')?.value; // YYYY-MM
+    // All rows for this student (for overall %)
+    const allRows = this.DATA.attendance.filter(a => (
+      a.student === selectedId ||
+      (selected && (a.student === selected.name || a.student === selected.nameZh))
+    ));
+    // Apply month filter for table view
+    let rows = [...allRows];
+    
+    if (month) {
+      rows = rows.filter(a => a.date.startsWith(month));
+    }
+    
+    const tbody = $('#att-table tbody');
+    if (!tbody) return;
+    
+    // Compute attendance percentages
+    const uniqDates = (arr) => Array.from(new Set(arr.map(r => r.date)));
+    const presentCount = (arr) => arr.filter(r => r.status === 'Present').length;
+    const allDates = uniqDates(allRows);
+    const allPresent = presentCount(allRows);
+    const allPct = allDates.length ? Math.round((allPresent / allDates.length) * 100) : 0;
+    const filtDates = uniqDates(rows);
+    const filtPresent = presentCount(rows);
+    const filtPct = filtDates.length ? Math.round((filtPresent / filtDates.length) * 100) : 0;
+    
+    // Render or update summary element above the table
+    const attPanel = document.getElementById('attendance');
+    if (attPanel) {
+      let summary = document.getElementById('att-summary');
+      if (!summary) {
+        summary = document.createElement('div');
+        summary.id = 'att-summary';
+        summary.className = 'muted';
+        // insert just before the table
+        const tableEl = document.getElementById('att-table');
+        if (tableEl && tableEl.parentNode) {
+          tableEl.parentNode.insertBefore(summary, tableEl);
+        } else {
+          attPanel.appendChild(summary);
+        }
+      }
+      summary.textContent = month
+        ? `Attendance: ${filtPresent}/${filtDates.length} (${filtPct}%) • Overall: ${allPresent}/${allDates.length} (${allPct}%)`
+        : `Attendance: ${allPresent}/${allDates.length} (${allPct}%)`;
+    }
+    
+    tbody.innerHTML = rows
+      .sort((a, b) => a.date > b.date ? -1 : 1)
+      .map(r => `<tr>
+        <td>${r.date}</td>
+        <td>${r.status}</td>
+        <td>${(r.notes == null || r.notes === '')
+          ? '—'
+          : (/^\s*late\b/i.test(String(r.notes))
+            ? `<span class="text-danger">${this.escapeHtml(String(r.notes))}</span>`
+            : this.escapeHtml(String(r.notes)))}
+        </td>
+      </tr>`)
+      .join('') || '<tr><td colspan="3">No attendance records yet.</td></tr>';
+    this.applyRowAppear(tbody);
+
+    // Render charts beneath filters
+    this.renderAttendanceCharts();
+  }
+
