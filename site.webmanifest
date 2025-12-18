@@ -1,0 +1,21 @@
+{
+  "name": "Quantum Mechanics Course",
+  "short_name": "QM Course",
+  "description": "Quantum Mechanics (1) Course Site",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c1024",
+  "theme_color": "#5b8cff",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

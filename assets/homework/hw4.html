@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>H.W.</title>
+  <!-- MathJax for LaTeX rendering -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height: 1.55; margin: 2rem; }
+    h1 { margin-bottom: 0; }
+    .date { color:#555; margin-top: .25rem; }
+    ol { margin-top: 1rem; }
+    li { margin: 1rem 0; }
+    code { background:#f6f8fa; padding: .15rem .35rem; border-radius: 4px; }
+  </style>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer" />
+</head>
+<body>
+
+  <h1>H.W.</h1>
+  <div class="date">25/10/—</div>
+
+  <ol>
+    <li>
+      <strong>Prove by explicit calculation:</strong><br>
+      \[
+      \sum_{i=1}^{N} \frac{\partial}{\partial x_i}\,
+      V\!\big(x_1-x_2,\; x_2-x_3,\; \dots,\; x_{N-1}-x_N\big)=0
+      \]
+      for any potential \(V\) whose arguments are differences of coordinates, i.e. terms of the form
+      \(x_i-x_j\) (not only consecutive differences like \(x_i-x_{i+1}\)).
+    </li>
+
+    <li>
+      An operator \(U\) is said to be <em>unitary</em> if it satisfies
+      \[
+      UU^{\dagger}=U^{\dagger}U=\mathbb{I}.
+      \]
+      Show that if \(\langle \psi | \psi \rangle = 1\), then
+      \[
+      \langle U\psi \mid U\psi \rangle = 1.
+      \]
+    </li>
+  </ol>
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Homework 2 — Parity & Scattering Matrix</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']] } };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;line-height:1.6;margin:1.2rem;padding:0;color:#111;background:#fff}
+    h1,h2{margin:.2rem 0 .8rem 0}
+    .muted{color:#666;font-size:.95rem}
+    .card{border:1px solid #e5e7eb;border-radius:12px;padding:16px 14px;margin:14px 0 22px}
+    .eq{background:#fafafa;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;overflow:auto;margin:10px 0}
+    .svg-wrap{background:#fafafa;border:1px solid #e5e7eb;border-radius:10px;padding:10px;margin:12px 0}
+    .matrix{margin-top:8px}
+    a{color:#1f6feb;text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* SVG styling (light theme like HW1) */
+    .axis{ stroke:#606c76; }
+    .bump{ stroke:#22863a; }
+    .wave{ stroke:#1e88e5; stroke-width:2; fill:none; opacity:.95 }
+    .wave-right{ stroke-dasharray: 10 12; animation: travel-right 2.2s linear infinite }
+    .wave-left { stroke-dasharray: 10 12; animation: travel-left  2.2s linear infinite }
+    @keyframes travel-right { to { stroke-dashoffset: -240 } }
+    @keyframes travel-left  { to { stroke-dashoffset:  240 } }
+  </style>
+</head>
+<body>
+  <h1>Homework 2</h1>
+  <p class="muted">Parity and 1D scattering with the $2\times 2$ S‑matrix</p>
+
+  <h2>1) Parity operator</h2>
+  <p>
+    Show that the parity operator satisfies
+    <span class="eq">$ \hat{P}\,\psi(x) = \psi(-x) $</span>
+    and is real for any state $\psi(x)$.
+  </p>
+
+  <h2>2) Localized potential and the scattering matrix</h2>
+  <p>
+    Consider an arbitrary potential localized on a finite part of the $x$‑axis.
+    The solutions to the left and to the right of the potential are given by
+  </p>
+  <div class="eq">$ Ae^{ikx} + Be^{-ikx} \;\text{(left)} \qquad Ce^{ikx} + De^{-ikx} \;\text{(right)} $</div>
+
+  <div class="svg-wrap" aria-label="1D scattering diagram with localized potential">
+      <svg viewBox="0 0 900 240" width="100%" height="auto" role="img">
+        <title>Scattering from a localized potential: left/right plane waves and S-matrix labels</title>
+
+        <!-- Baseline (x-axis) -->
+        <line x1="20" y1="120" x2="880" y2="120" class="axis" stroke-width="2"/>
+        
+
+        <!-- Localized potential "bump" -->
+        <path d="M 370 120
+                 C 395 110, 410 105, 430 110
+                 C 448 115, 458 130, 470 122
+                 C 488 108, 505 112, 525 120" 
+              fill="none" class="bump" stroke-width="3"/>
+
+        <!-- Traveling waves (animated) -->
+        <!-- Incoming from left: A e^{ikx} (to the right) -->
+        <path class="wave wave-right" d="M 60 120
+                 q 12 -16 24 0
+                 q 12 16 24 0
+                 q 12 -16 24 0
+                 q 12 16 24 0
+                 q 12 -16 24 0
+                 q 12 16 24 0
+                 q 12 -16 24 0" />
+
+        <!-- Reflected on left: B e^{-ikx} (to the left) -->
+        <path class="wave wave-left" d="M 300 120
+                 q 12 -16 24 0
+                 q 12 16 24 0
+                 q 12 -16 24 0
+                 q 12 16 24 0" />
+
+        <!-- Transmitted on right: C e^{ikx} (to the right) -->
+        <path class="wave wave-right" d="M 560 120
+                 q 12 -16 24 0
+                 q 12 16 24 0
+                 q 12 -16 24 0
+                 q 12 16 24 0
+                 q 12 -16 24 0
+                 q 12 16 24 0
+                 q 12 -16 24 0" />
+
+        <!-- Possible left-going component on right: D e^{-ikx} -->
+        <path class="wave wave-left" d="M 820 120
+                 q 12 -16 24 0
+                 q 12 16 24 0
+                 q 12 -16 24 0" />
+
+        <!-- Labels with proper superscripts using SVG tspans -->
+        <text x="58" y="76" font-size="16" fill="#111">
+          A e<tspan style="baseline-shift:super; font-size:12px">ikx</tspan>
+          + B e<tspan style="baseline-shift:super; font-size:12px">-ikx</tspan>
+        </text>
+        <text x="638" y="76" font-size="16" fill="#111">
+          C e<tspan style="baseline-shift:super; font-size:12px">ikx</tspan>
+          + D e<tspan style="baseline-shift:super; font-size:12px">-ikx</tspan>
+        </text>
+        <text x="430" y="168" font-size="14" fill="#444">Localized Potential</text>
+      </svg>
+      
+  </div>
+
+  <p>Respectively, show that if we write</p>
+  <div class="eq">$ C = S_{11}A + S_{12}D, \qquad B = S_{21}A + S_{22}D. $</div>
+
+  <p>That is, relate the outgoing waves to the incoming wave by</p>
+  <div class="eq matrix">
+    \[
+    \begin{pmatrix} C \\ B \end{pmatrix}
+    =
+    \begin{pmatrix}
+      S_{11} & S_{12} \\ S_{21} & S_{22}
+    \end{pmatrix}
+    \begin{pmatrix} A \\ D \end{pmatrix}.
+    \]
+  </div>
+
+  <p>Show that the following relations hold:</p>
+  <div class="eq">
+    \[
+      |S_{11}|^2 + |S_{12}|^2 = 1, \qquad
+      |S_{21}|^2 + |S_{22}|^2 = 1, \qquad
+      S_{11}^* S_{12} + S_{21}^* S_{22} = 0.
+    \]
+  </div>
+  <p class="muted">i.e., $ S = \begin{pmatrix} S_{11} & S_{12} \\ S_{21} & S_{22} \end{pmatrix} $ is unitary, so $S^{\dagger}S = I$.</p>
+
+  
+</body>
+</html>

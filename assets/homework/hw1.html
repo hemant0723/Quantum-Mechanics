@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Homework 1</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;line-height:1.6;margin:1.2rem;padding:0;color:#111}
+    h1,h2{margin:.2rem 0 .8rem 0}
+    ol{padding-left:1.2rem}
+    li{margin:.8rem 0}
+    .muted{color:#666;font-size:.95rem}
+  </style>
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../../icons/icon-192x192.png">
+  <base target="_self">
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      // If opened from the main site, reflect due date if passed via hash/query later
+    });
+  </script>
+  <noscript><style>mjx-container{display:none}</style></noscript>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']] } };
+  </script>
+</head>
+<body>
+  <h2>Homework 1</h2>
+  <p class="muted">Due: 18 September 2025</p>
+  <ol>
+    <li>
+      Complete the proof that: <br>
+      \[
+        \langle p \rangle = \langle \hat{p}_{op} \rangle 
+        = \int dx \, \psi^* \, \frac{\hbar}{i}\frac{\partial \psi}{\partial x}
+      \]
+      and show that
+      \[
+        \langle p \rangle - \langle p \rangle^* = 0.
+      \]
+    </li>
+    <li>
+      Definitions:
+      \[
+        \Delta A = \sqrt{ \langle (A - \langle A \rangle)^2 \rangle }
+        = \sqrt{\langle A^2 \rangle - \langle A \rangle^2},
+      \]
+      \[
+        \Delta B = \sqrt{ \langle (B - \langle B \rangle)^2 \rangle }
+        = \sqrt{\langle B^2 \rangle - \langle B \rangle^2}.
+      \]
+      <br>
+      Define: 
+      \[
+        \bar{A} = A - \langle A \rangle, \quad
+        \bar{B} = B - \langle B \rangle.
+      \]
+      <br>
+      Use the Schwarz inequality:
+      \[
+        (\Delta A \, \Delta B)^2 \geq |\langle \bar{A}\bar{B} \rangle|^2
+      \]
+      to show that
+      \[
+        \Delta p \, \Delta x \geq \frac{\hbar}{2}.
+      \]
+    </li>
+  </ol>
+</body>
+</html>
+

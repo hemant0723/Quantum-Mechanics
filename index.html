@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+  <link rel="manifest" href="site.webmanifest">
+  <title>Quantum Mechanics I (Phys8067) | Course Hub</title>
+  <meta name="description" content="Official course site for Quantum Mechanics (I) (TIGP). Syllabus, attendance, assignments, homework, books, and contacts." />
+  <link rel="stylesheet" href="assets/css/styles.beautiful.css" />
+</head>
+<body>
+    <header class="hero">
+    <div class="hero-inner">
+      <div class="brand">
+        <span class="logo">QM</span>
+        <div class="titles">
+          <h1 id="course-title">Quantum Mechanics (I)</h1>
+          <p id="course-subtitle">Phys8067 • 114-1</p>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <a class="tab active" role="tab" href="#info" aria-selected="true">Course Info</a>
+        <a class="tab" role="tab" href="#syllabus" aria-selected="false">Syllabus</a>
+        <a class="tab" role="tab" href="#homework" aria-selected="false">Homework</a>
+        <a class="tab" role="tab" href="#results" aria-selected="false">Results</a>
+        <a class="tab" role="tab" href="#notes" aria-selected="false">Notes</a>
+        <a class="tab" role="tab" href="#books" aria-selected="false">Books</a>
+        <a class="tab" role="tab" href="#contacts" aria-selected="false">Contacts</a>
+        <a class="tab" id="admin-tab" style="display:none" role="tab" href="#admin" aria-selected="false">Admin</a>
+      </nav>
+      <div class="header-actions"></div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Student selector removed per request -->
+
+    <!-- INFO -->
+    <section id="info" class="panel active">
+      <div class="grid two">
+        <div class="card">
+          <h2>Overview</h2>
+          <p id="course-desc"></p>
+          <h3>Goals</h3>
+          <p id="course-goals"></p>
+          <h3>Prerequisites</h3>
+          <p id="course-prereq"></p>
+        </div>
+        <div class="card">
+          <h2>Logistics</h2>
+          <table class="kv">
+            <tbody id="info-table">
+              <!-- populated by JS -->
+            </tbody>
+          </table>
+          <h3>Evaluation</h3>
+          <ul id="eval-list"></ul>
+          <h3>Office Hours</h3>
+          <p id="office-hours"></p>
+          <h3>Policies</h3>
+          <ul id="policy-list"></ul>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h2>News</h2>
+        <ul style="color: var(--danger); margin: 0 0 .25rem 1rem;">
+          <li>The final exam was held on 18 December 2025.</li>
+          <li><strong>Results have been updated!</strong> <a href="#results" style="color: var(--primary); text-decoration: underline;">View your results here</a>.</li>
+        </ul>
+      </div>
+      
+    </section>
+
+    <!-- SYLLABUS -->
+    <section id="syllabus" class="panel">
+      <h2>Syllabus & Weekly Topics</h2>
+      <table class="table" id="syllabus-table">
+        <thead><tr><th>Week</th><th>Date</th><th>Topic</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    
+
+    
+
+    <!-- HOMEWORK -->
+    <section id="homework" class="panel">
+      <h2>Homework</h2>
+      <div id="hw-accordion" class="accordion"></div>
+      
+    </section>
+
+    <!-- RESULTS (Transcript view) -->
+    <section id="results" class="panel">
+      <h2>Results</h2>
+      <div class="card portal-card">
+        <div class="portal-inner">
+          <h3 class="portal-title">University Result Entry Portal</h3>
+          <p class="portal-sub">Enter Student ID or Name to view your informal transcript</p>
+          <div class="portal-fields">
+            <input type="text" id="tr-search-id" class="portal-input" placeholder="Student ID" aria-label="Search by Student ID" />
+            <div class="portal-or">or</div>
+            <input type="text" id="tr-search-name" class="portal-input" placeholder="Student Name" aria-label="Search by Student Name" />
+          </div>
+          <div class="portal-actions">
+            <button id="tr-search-btn" class="portal-btn" title="Find transcript">View</button>
+          </div>
+          <div class="portal-note">This is not an official transcript; it is only for your marks distribution.</div>
+        </div>
+      </div>
+      <div class="card" id="transcript" style="display:none">
+        <div class="transcript-header">
+          <img class="transcript-logo" src="assets/icons/icon-192x192.png" alt="Institute logo" />
+          <div class="transcript-title">
+            <div class="muted" id="tr-university">Institute of Physics</div>
+            <h3 class="transcript-heading">Unofficial Course Transcript</h3>
+            <div class="muted small" id="tr-course-line">
+              <span id="tr-course">-</span> | <span id="tr-semester">-</span>
+            </div>
+          </div>
+          <div class="transcript-actions no-print no-pdf" aria-label="Transcript actions">
+            <button id="transcript-pdf" title="Download PDF">Download PDF</button>
+          </div>
+        </div>
+        <div class="grid two">
+          <table class="kv">
+            <tbody>
+              <tr><th>Student</th><td id="tr-student">-</td></tr>
+              <tr><th>Student ID</th><td id="tr-id">-</td></tr>
+              <tr><th>Program</th><td id="tr-program">-</td></tr>
+            </tbody>
+          </table>
+          <table class="kv">
+            <tbody>
+              <tr><th>Course</th><td><span id="tr-course-dup">-</span></td></tr>
+              <tr><th>Semester</th><td><span id="tr-semester-dup">-</span></td></tr>
+              <tr><th>Letter Grade</th><td id="tr-letter">-</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Score Summary</h3>
+        <table class="table" id="tr-breakdown">
+          <thead><tr><th>Component</th><th>Scored</th><th>Max</th><th>Weighted</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="muted" id="tr-note"></div>
+        <div class="muted" id="tr-final-note">Final grade will be updated after all exams.</div>
+      </div>
+    </section>
+
+    <!-- NOTES -->
+    <section id="notes" class="panel">
+      <h2>Notes</h2>
+      <div id="notes-accordion" class="accordion"></div>
+    </section>
+
+    <!-- BOOKS -->
+    <section id="books" class="panel">
+      <h2>Books & References</h2>
+      <div class="actions">
+        <input type="search" id="book-search" placeholder="Search…" />
+      </div>
+      <table class="table" id="books-table">
+        <thead><tr><th>Title</th><th>Author(s)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- CONTACTS -->
+    <section id="contacts" class="panel">
+      <h2>Contacts</h2>
+      <div id="contacts-box" class="cards"></div>
+    </section>
+
+    
+
+    <!-- ADMIN -->
+    <section id="admin" class="panel">
+      <h2>Admin</h2>
+      <div class="actions">
+        <button id="adm-logout">Logout</button>
+      </div>
+      <div class="card">
+        <h3>Attendance Editor</h3>
+        <div class="row-wrap">
+          <input type="date" id="adm-att-date" aria-label="Attendance date" />
+          <button id="adm-att-all">Mark all</button>
+          <button id="adm-att-save">Save attendance</button>
+        </div>
+        <div id="adm-att-list" class="cards" style="gap:.4rem"></div>
+        <small class="muted">Saves to this browser only (no server). You can export/import below.</small>
+      </div>
+      <div class="card">
+        <h3>Homework Editor</h3>
+        <div class="row-wrap">
+          <input type="text" id="adm-hw-title" placeholder="Title" aria-label="Homework title" />
+          <input type="date" id="adm-hw-due" aria-label="Due date" />
+          <input type="number" id="adm-hw-points" placeholder="Points" aria-label="Points" />
+          <input type="url" id="adm-hw-link" placeholder="Link (optional)" aria-label="Link" />
+        </div>
+        <textarea id="adm-hw-desc" rows="3" placeholder="Description" style="width:100%"></textarea>
+        <div class="row-wrap">
+          <button id="adm-hw-add">Add homework</button>
+        </div>
+        <div id="adm-hw-list" class="cards"></div>
+      </div>
+      <div class="card">
+        <h3>Results (Admin)</h3>
+        <div class="grid two">
+          <div class="card">
+            <h3>Overall Progress</h3>
+            <div id="res-progress" class="att-progress" aria-label="Overall course progress"></div>
+            <div class="muted" id="res-progress-text"></div>
+          </div>
+          <div class="card">
+            <h3>Breakdown</h3>
+            <table class="table" id="res-breakdown">
+              <thead>
+                <tr><th>Component</th><th>Scored</th><th>Max</th><th>Weighted</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Marks by Assignment</h3>
+          <table class="table" id="res-assn-table">
+            <thead>
+              <tr><th>Assignment</th><th>Marks</th><th>Max</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Backup / Restore</h3>
+        <div class="row-wrap">
+          <button id="adm-export">Copy overrides JSON</button>
+          <button id="adm-export-xlsx">Download Excel (Homework 6‑Mark scale, best 10 of 11)</button>
+          <button id="adm-clear">Clear overrides</button>
+        </div>
+        <textarea id="adm-import-text" rows="6" placeholder="Paste overrides JSON here…" style="width:100%"></textarea>
+        <div class="row-wrap">
+          <button id="adm-import">Import</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="col">
+        <h4 class="footer-title" id="footer-course">Course</h4>
+        <ul class="footer-list">
+          <li id="footer-numbers">—</li>
+          <li id="footer-time">—</li>
+          <li id="footer-location">—</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4 class="footer-title">Contacts</h4>
+        <ul class="footer-list">
+          <li>Instructor: <span id="footer-instructor">—</span></li>
+          <li>TA: <span id="footer-ta">—</span></li>
+          <li id="footer-institute">—</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4 class="footer-title">Links</h4>
+        <ul class="footer-list">
+          <li><a href="#info">Course Info</a></li>
+          <li><a href="#syllabus">Syllabus</a></li>
+          
+          <li><a href="#notes">Notes</a></li>
+          <li><a href="#contacts">Contacts</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <small>© <span id="footer-year"></span> <span id="footer-course-short">Quantum Mechanics (I)</span> • TIGP</small>
+    </div>
+  </footer>
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="assets/css/styles.css" as="style">
+  <link rel="preload" href="data/data.js" as="script">
+  <link rel="preload" href="assets/js/app.new.js" as="script">
+  
+  <!-- Load data and initialize app -->
+  <script src="data/data.js" defer></script>
+  <!-- XLSX library for Excel export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+  <!-- html2pdf for PDF export of transcript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js" integrity="sha512-YcsIPYf8eIjJG+E+9wFMCbNf1pM8qG6ytR77t3PuVJmC9Y0y0qL3p8YOkJb0iPDPb1Z1qS4W0bGQvJmN+Ff2ug==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+  <script src="assets/js/app.new.js" defer></script>
+  
+  <!-- Fallback for older browsers -->
+  <script>
+    // Add no-js class for progressive enhancement
+    document.documentElement.classList.remove('no-js');
+    document.documentElement.classList.add('js');
+    
+    // Load polyfills if needed
+    if (!('Promise' in window)) {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>');
+    }
+    
+    // Load app after polyfills
+    window.addEventListener('load', function() {
+      // Initialize app if not already done
+      if (window.appInitialized) return;
+      const script = document.createElement('script');
+      script.src = 'assets/js/app.new.js';
+      document.body.appendChild(script);
+    });
+  </script>
+</body>
+</html>

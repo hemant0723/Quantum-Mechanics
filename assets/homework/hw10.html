@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Homework 10 — 2025/11/27</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <style>
+    :root { --text:#111827; --muted:#6b7280; --line:#e5e7eb; }
+    html,body{margin:0;padding:0;background:#fff;color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif}
+    .wrap{max-width:800px;margin:0 auto;padding:1.2rem 1rem 2rem}
+    h1{margin:.25rem 0 .25rem 0;font-size:1.6rem}
+    h2{margin:1.2rem 0 .4rem 0;font-size:1.2rem}
+    .sub{color:var(--muted);margin-top:0}
+    hr{border:none;border-top:1px solid var(--line);margin:1rem 0}
+    code,kbd,pre{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .q{margin:.6rem 0}
+    ol { padding-left: 1.2rem; }
+  </style>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] }, svg: { fontCache: 'global' } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  </head>
+<body>
+  <div class="wrap">
+    <h1>Homework 10 — 2025/11/27</h1>
+    <p class="sub">Classical Lorentz force from Hamiltonian; probability current with vector potential</p>
+    <hr>
+
+    <h2>Problem 1</h2>
+    <p>Show that the Hamiltonian</p>
+    <p>
+      $$
+      H = \frac{1}{2m}\Big[\vec p + \frac{e}{c}\,\vec A(\vec r,t)\Big]^2 - \frac{e^2}{r}
+      $$
+    </p>
+    <p>yields the Lorentz force equation</p>
+    <p>
+      $$
+      m\,\frac{d^{2}\vec r}{dt^{2}} = -e\Big[\vec E(\vec r,t) + \frac{1}{c}\,\frac{d\vec r}{dt}\times\vec B(\vec r,t)\Big].
+      $$
+    </p>
+    <p><strong>Hint.</strong></p>
+    <p>
+      $$
+      \frac{d}{dt}\vec A(\vec r,t) = \frac{\partial \vec A}{\partial t} + \frac{dx}{dt}\frac{\partial \vec A}{\partial x} + \frac{dy}{dt}\frac{\partial \vec A}{\partial y} + \frac{dz}{dt}\frac{\partial \vec A}{\partial z},
+      $$
+      $$
+      \frac{dx}{dt} = \frac{\partial H}{\partial p_x}, \qquad \frac{dp_x}{dt} = -\,\frac{\partial H}{\partial x}.
+      $$
+    </p>
+
+    <h2>Problem 2</h2>
+    <p>Show that for a system described by the Hamiltonian</p>
+    <p>
+      $$
+      H = \frac{1}{2m}\Big[\vec p + \frac{e}{c}\,\vec A(\vec r,t)\Big]^2,
+      $$
+    </p>
+    <p>the probability current density $\vec j$, which satisfies</p>
+    <p>
+      $$
+      \frac{\partial}{\partial t}\big(\psi^*\psi\big) + \nabla\cdot\vec j = 0,
+      $$
+    </p>
+    <p>is given by</p>
+    <p>
+      $$
+      \vec j = \frac{\hbar}{2 i m}\left[\psi^* \, \nabla\psi - (\nabla\psi^*)\,\psi + \frac{2 i e}{\hbar c}\,\vec A(\vec r,t)\,\psi^*\psi\right].
+      $$
+    </p>
+  </div>
+ </body>
+</html>
+

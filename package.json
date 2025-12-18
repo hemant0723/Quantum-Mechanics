@@ -1,0 +1,12 @@
+{
+  "name": "qm-course-site",
+  "private": true,
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "description": "Quantum Mechanics (I) course site with optional MongoDB-backed discussion API",
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "mongodb": "^5.9.0"
+  }
+}
+
